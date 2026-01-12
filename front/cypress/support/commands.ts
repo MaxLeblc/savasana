@@ -1,21 +1,47 @@
 // ***********************************************
-// This example namespace declaration will help
-// with Intellisense and code completion in your
-// IDE or Text Editor.
+// Custom command declarations for TypeScript
 // ***********************************************
-// declare namespace Cypress {
-//   interface Chainable<Subject = any> {
-//     customCommand(param: any): typeof customCommand;
-//   }
-// }
-//
-// function customCommand(param: any): void {
-//   console.warn(param);
-// }
-//
-// NOTE: You can use it like so:
-// Cypress.Commands.add('customCommand', customCommand);
-//
+declare namespace Cypress {
+  interface Chainable {
+    /**
+     * Custom command to log in a user
+     * @param email - User email (default: yoga@studio.com)
+     * @param password - User password (default: test!1234)
+     * @param admin - Whether user is admin (default: true)
+     * @example cy.login()
+     * @example cy.login('user@test.com', 'password', false)
+     */
+    login(email?: string, password?: string, admin?: boolean): Chainable<void>;
+  }
+}
+
+// -- Login command --
+Cypress.Commands.add('login', (email = 'yoga@studio.com', password = 'test!1234', admin = true) => {
+  cy.visit('/login');
+
+  // Mock the login API call
+  cy.intercept('POST', '/api/auth/login', {
+    body: {
+      id: 1,
+      username: email,
+      firstName: admin ? 'Admin' : 'User',
+      lastName: admin ? 'Admin' : 'Test',
+      admin: admin,
+      token: 'fake-jwt-token'
+    },
+  });
+
+  // Mock the sessions API call (called after login redirect)
+  cy.intercept('GET', '/api/session', []).as('session');
+
+  // Fill in the login form
+  cy.get('input[formControlName=email]').type(email);
+  cy.get('input[formControlName=password]').type(`${password}{enter}{enter}`);
+
+  // Wait for redirect to sessions page
+  cy.url().should('include', '/sessions');
+});
+
 // ***********************************************
 // This example commands.js shows you how to
 // create various custom commands and overwrite

@@ -32,3 +32,8 @@ build/
 **/.DS_Store
 .DS_Store
 *.DS_Store
+
+### Environment variables ###
+.env
+.env.local
+application-local.properties

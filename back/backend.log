@@ -1,0 +1,100 @@
+nohup: les entrées sont ignorées
+[INFO] Scanning for projects...
+[WARNING] 
+[WARNING] Some problems were encountered while building the effective model for com.openclassrooms:yoga-app:jar:0.0.1-SNAPSHOT
+[WARNING] 'build.plugins.plugin.(groupId:artifactId)' must be unique but found duplicate declaration of plugin org.springframework.boot:spring-boot-maven-plugin @ line 100, column 12
+[WARNING] 
+[WARNING] It is highly recommended to fix these problems because they threaten the stability of your build.
+[WARNING] 
+[WARNING] For this reason, future Maven versions might no longer support building such malformed projects.
+[WARNING] 
+[INFO] 
+[INFO] --------------------< com.openclassrooms:yoga-app >---------------------
+[INFO] Building yoga-app 0.0.1-SNAPSHOT
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> spring-boot:2.6.1:run (default-cli) > test-compile @ yoga-app >>>
+[INFO] 
+[INFO] --- jacoco:0.8.5:prepare-agent (default) @ yoga-app ---
+[INFO] argLine set to -javaagent:/home/max/.m2/repository/org/jacoco/org.jacoco.agent/0.8.5/org.jacoco.agent-0.8.5-runtime.jar=destfile=/home/max/Dev/Perso/savasana/back/target/jacoco.exec
+[INFO] 
+[INFO] --- resources:3.2.0:resources (default-resources) @ yoga-app ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] Copying 1 resource
+[INFO] Copying 0 resource
+[INFO] 
+[INFO] --- compiler:3.8.1:compile (default-compile) @ yoga-app ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] --- resources:3.2.0:testResources (default-testResources) @ yoga-app ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] Using 'UTF-8' encoding to copy filtered properties files.
+[INFO] skip non existing resourceDirectory /home/max/Dev/Perso/savasana/back/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.8.1:testCompile (default-testCompile) @ yoga-app ---
+[INFO] Nothing to compile - all classes are up to date
+[INFO] 
+[INFO] <<< spring-boot:2.6.1:run (default-cli) < test-compile @ yoga-app <<<
+[INFO] 
+[INFO] 
+[INFO] --- spring-boot:2.6.1:run (default-cli) @ yoga-app ---
+[INFO] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::                (v2.6.1)
+
+2026-01-12 12:14:29.621  INFO 87494 --- [           main] c.o.s.SpringBootSecurityJwtApplication   : Starting SpringBootSecurityJwtApplication using Java 25.0.1 on Max with PID 87494 (/home/max/Dev/Perso/savasana/back/target/classes started by max in /home/max/Dev/Perso/savasana/back)
+2026-01-12 12:14:29.622  INFO 87494 --- [           main] c.o.s.SpringBootSecurityJwtApplication   : No active profile set, falling back to default profiles: default
+2026-01-12 12:14:29.788  INFO 87494 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-01-12 12:14:29.802  INFO 87494 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 12 ms. Found 3 JPA repository interfaces.
+WARNING: A restricted method in java.lang.System has been called
+WARNING: java.lang.System::load has been called by org.apache.tomcat.jni.Library in an unnamed module (file:/home/max/.m2/repository/org/apache/tomcat/embed/tomcat-embed-core/9.0.55/tomcat-embed-core-9.0.55.jar)
+WARNING: Use --enable-native-access=ALL-UNNAMED to avoid a warning for callers in this module
+WARNING: Restricted methods will be blocked in a future release unless native access is enabled
+
+2026-01-12 12:14:29.949  INFO 87494 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2026-01-12 12:14:29.952  INFO 87494 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-01-12 12:14:29.952  INFO 87494 --- [           main] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.55]
+2026-01-12 12:14:29.971  INFO 87494 --- [           main] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2026-01-12 12:14:29.971  INFO 87494 --- [           main] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 333 ms
+2026-01-12 12:14:29.987  WARN 87494 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-01-12 12:14:30.010  INFO 87494 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-01-12 12:14:30.119  INFO 87494 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-01-12 12:14:30.130  INFO 87494 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-01-12 12:14:30.142  INFO 87494 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.6.1.Final
+2026-01-12 12:14:30.175  INFO 87494 --- [           main] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.2.Final}
+2026-01-12 12:14:30.196  INFO 87494 --- [           main] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+2026-01-12 12:14:30.334  INFO 87494 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2026-01-12 12:14:30.336  INFO 87494 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-01-12 12:14:30.534  INFO 87494 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@7bad18f5, org.springframework.security.web.context.SecurityContextPersistenceFilter@3aed692d, org.springframework.security.web.header.HeaderWriterFilter@21780905, org.springframework.web.filter.CorsFilter@4407fea2, org.springframework.security.web.authentication.logout.LogoutFilter@1e14b269, com.openclassrooms.starterjwt.security.jwt.AuthTokenFilter@41581c3f, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@21579b35, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@21d15932, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@64e3bc2, org.springframework.security.web.session.SessionManagementFilter@1e5e3147, org.springframework.security.web.access.ExceptionTranslationFilter@351be56b, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@261609a7]
+2026-01-12 12:14:30.588  INFO 87494 --- [           main] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2026-01-12 12:14:30.591  INFO 87494 --- [           main] c.o.s.SpringBootSecurityJwtApplication   : Started SpringBootSecurityJwtApplication in 1.068 seconds (JVM running for 1.158)
+2026-01-12 12:14:47.174  INFO 87494 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-01-12 12:14:47.174  INFO 87494 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-01-12 12:14:47.174  INFO 87494 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 0 ms
+Hibernate: select user0_.id as id1_3_, user0_.admin as admin2_3_, user0_.created_at as created_3_3_, user0_.email as email4_3_, user0_.first_name as first_na5_3_, user0_.last_name as last_nam6_3_, user0_.password as password7_3_, user0_.updated_at as updated_8_3_ from USERS user0_ where user0_.email=?
+2026-01-12 12:14:47.384 ERROR 87494 --- [nio-8080-exec-1] c.o.s.security.jwt.AuthEntryPointJwt     : Unauthorized error: Bad credentials
+2026-01-12 12:23:41.859  WARN 87494 --- [nio-8080-exec-2] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.web.bind.MethodArgumentNotValidException: Validation failed for argument [0] in public org.springframework.http.ResponseEntity<?> com.openclassrooms.starterjwt.controllers.AuthController.authenticateUser(com.openclassrooms.starterjwt.payload.request.LoginRequest) with 2 errors: [Field error in object 'loginRequest' on field 'password': rejected value [null]; codes [NotBlank.loginRequest.password,NotBlank.password,NotBlank.java.lang.String,NotBlank]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginRequest.password,password]; arguments []; default message [password]]; default message [ne doit pas être vide]] [Field error in object 'loginRequest' on field 'email': rejected value [null]; codes [NotBlank.loginRequest.email,NotBlank.email,NotBlank.java.lang.String,NotBlank]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [loginRequest.email,email]; arguments []; default message [email]]; default message [ne doit pas être vide]] ]
+2026-01-12 12:27:05.256  INFO 87494 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-01-12 12:27:05.257  INFO 87494 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-01-12 12:27:05.259  INFO 87494 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  12:36 min
+[INFO] Finished at: 2026-01-12T12:27:05+01:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.springframework.boot:spring-boot-maven-plugin:2.6.1:run (default-cli) on project yoga-app: Application finished with exit code: 143 -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException

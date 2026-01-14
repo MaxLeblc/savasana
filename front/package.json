@@ -2,7 +2,8 @@
   "name": "yoga-app",
   "version": "0.0.0",
   "scripts": {
-    "start": "ng serve",
+    "start": "npx ng serve",
+    "start:e2e": "npx ng run yoga:serve-coverage",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "ng lint",

@@ -1,144 +1,242 @@
-# 🚀 Getting Started Guide - Savasana Yoga Project
+# Savasana - Yoga Class Management Application
 
-## ✅ Configuration Complete
+Full-stack application for managing yoga sessions, including:
+- **Backend**: Spring Boot REST API (Java 17)
+- **Frontend**: Angular 14 Application
+- **Database**: MySQL 8.0
 
-All tools have been installed on your CachyOS system:
+## Prerequisites
 
-- ✅ Node.js v16 (for Angular 14)
-- ✅ Node.js v25.2.1 (system)
-- ✅ npm v11.7.0
-- ✅ OpenJDK 17 (for Spring Boot)
-- ✅ OpenJDK 25.0.1 (system)
-- ✅ Maven 3.9.12
-- ✅ Docker + Docker Compose
+Before starting, ensure you have installed:
 
-## 📝 Steps to Start the Project
+- **Node.js v16.x** (required for Angular 14)
+- **Java 17** (OpenJDK recommended)
+- **Maven 3.9+**
+- **Docker & Docker Compose**
+- **Git**
 
-### 1. **IMPORTANT** - Enable Docker
+> **Note**: If multiple Java/Node versions are installed, the provided scripts automatically manage the correct versions.
 
-You must **log out and log back in** to your session for Docker to work without sudo.
+## Installation
 
-After reconnecting, verify with:
+### 1. Clone the Project
 
 ```bash
-docker ps
+git clone <repository-url>
+cd savasana
 ```
 
-### 2. Start the MySQL Database
+### 2. Install the Database
+
+The MySQL database is managed via Docker Compose:
 
 ```bash
-# At the project root
 docker compose up -d
 ```
 
 This will:
-
 - Download the MySQL 8.0 image
 - Create the `yoga` database
 - Automatically execute the `ressources/sql/script.sql` script
 - Expose MySQL on port 3306
 
-To verify that MySQL is running:
+**Verify MySQL is running:**
 
 ```bash
 docker compose ps
 docker compose logs mysql
 ```
 
-### 3. Start the Backend (Spring Boot)
+**Default configuration:**
+- Host: `localhost:3306`
+- Database: `yoga`
+- User: `root`
+- Password: `root`
 
-**Option 1: Using the script**
+### 3. Install the Backend Application
+
+```bash
+cd back
+mvn clean install
+```
+
+This will compile the project and install all Maven dependencies.
+
+### 4. Install the Frontend Application
+
+```bash
+cd front
+npm install
+```
+
+> **Important**: Use Node.js v16 to avoid compatibility issues with Angular 14.
+
+## Running the Application
+
+### Quick Start (Recommended)
+
+**Terminal 1 - Backend:**
 ```bash
 ./start-back.sh
 ```
+API accessible at `http://localhost:8080`
 
-**Option 2: Manually**
-```bash
-cd back
-mvn spring-boot:run
-```
-
-The backend will be accessible at: `http://localhost:8080`
-
-### 4. Start the Frontend (Angular)
-
-**⚠️ IMPORTANT: The frontend must be launched with Node 16 and proxy enabled!**
-
-**Option 1: Using the script (recommended)**
+**Terminal 2 - Frontend:**
 ```bash
 ./start-front.sh
 ```
+Application accessible at `http://localhost:4200`
 
-**Option 2: Manually**
+### Manual Start
+
+**Backend:**
+```bash
+cd back
+JAVA_HOME=/usr/lib/jvm/java-17-openjdk mvn spring-boot:run
+```
+
+**Frontend:**
 ```bash
 cd front
-nvm use 16
+nvm use 16  # If using nvm
 npm run start -- --proxy-config src/proxy.config.json
 ```
 
-The frontend will be accessible at: `http://localhost:4200`
-
 > **Note**: The proxy (`src/proxy.config.json`) automatically redirects `/api/*` calls to the backend on port 8080.
 
-## ⚠️ Warning: Stop Services Before Restarting
+### Default Test Account
 
-If you get an "Address already in use" / "Port already in use" error:
-
-### Check What's Running on Ports
-
-```bash
-# See all listening ports with processes
-sudo ss -tulpn | grep -E ':(3306|8080|4200)'
-
-# See what's using a specific port
-lsof -i :8080    # Backend
-lsof -i :4200    # Frontend
-lsof -i :3306    # MySQL
-
-# See all Java and Node processes
-ps aux | grep -E "(java|node)" | grep -v grep
+```
+Email: yoga@studio.com
+Password: test!1234
 ```
 
-### Stop Services
+## Running Tests
+
+### Backend Unit Tests (JUnit)
 
 ```bash
-# Stop the backend (port 8080)
-pkill -f "spring-boot:run"
-
-# Or kill a specific process by PID
-lsof -i :8080  # note the PID in column 2
-kill <PID>
-
-# Stop the frontend (port 4200)
-pkill -f "ng serve"
-
-# Stop MySQL
-docker compose down
+cd back
+JAVA_HOME=/usr/lib/jvm/java-17-openjdk mvn clean test
 ```
 
-### Complete Example to Identify and Kill
+**Coverage statistics:**
+- **77 tests** in total
+- **52 integration tests** (67.5%) using `@SpringBootTest` and MockMvc
+- **25 unit tests** (32.5%) using Mockito
+- Coverage: **87% instructions, 66% branches**
 
+### Frontend Unit Tests (Jest)
+
+**With script (recommended):**
 ```bash
-# 1. Identify the process on port 8080
-lsof -i :8080
-# Result: java  12345  max  ...
-
-# 2. Kill the process
-kill 12345
-
-# Or in one command
-kill $(lsof -t -i :8080)
+./run-jest.sh
 ```
 
-## 🛠️ Useful Commands
+**Manually:**
+```bash
+cd front
+npm test                    # Without coverage
+npm test -- --coverage      # With coverage
+```
 
-### Docker MySQL
+### Frontend E2E Tests (Cypress)
+
+**Prerequisites**: Both Backend AND Frontend must be running.
+
+**With script (recommended):**
 
 ```bash
-# Start
+# Terminal 1: Start the backend
+./start-back.sh
+
+# Terminal 2: Run Cypress with coverage
+./run-cypress.sh
+```
+
+The `run-cypress.sh` script:
+- Verifies services are running
+- Launches the frontend with coverage instrumentation
+- Executes Cypress tests in headless mode
+- Automatically generates the coverage report
+
+**Interactive mode (for debugging):**
+
+```bash
+# Terminal 1: Backend
+./start-back.sh
+
+# Terminal 2: Frontend with instrumentation
+cd front
+npm run start:e2e
+
+# Terminal 3: Cypress interface
+cd front
+npm run cypress:open
+```
+
+## Generate and View Coverage Reports
+
+### Automatic Generation
+
+Coverage reports are automatically generated when running tests with the provided scripts:
+
+- **Backend**: `./back/target/site/jacoco/index.html`
+- **Frontend Jest**: `./front/coverage/jest/lcov-report/index.html`
+- **Frontend Cypress**: `./front/coverage/lcov-report/index.html`
+
+### View All Reports
+
+```bash
+./view-coverage.sh
+```
+
+This script displays paths to all reports and can open them in the browser.
+
+### Manual Generation
+
+**Backend (Jacoco):**
+```bash
+cd back
+JAVA_HOME=/usr/lib/jvm/java-17-openjdk mvn clean test
+# Report generated at: target/site/jacoco/index.html
+```
+
+**Frontend Jest:**
+```bash
+cd front
+npm test -- --coverage
+# Report generated at: coverage/jest/lcov-report/index.html
+```
+
+**Frontend Cypress:**
+```bash
+cd front
+npm run e2e:coverage
+# Report generated at: coverage/lcov-report/index.html
+```
+
+### Backend Coverage Details
+
+The project intentionally excludes **automatically generated code** from coverage:
+- DTOs (Lombok getters/setters)
+- Models (JPA entities)
+- Payloads (request/response classes)
+- Mappers (MapStruct implementations)
+
+This exclusion follows **industry best practices**: only code with business logic is tested.
+
+**Result:** 100% coverage on testable code (Controllers, Services, Security).
+
+## Useful Commands
+
+### Docker MySQL Management
+
+```bash
+# Start MySQL
 docker compose up -d
 
-# Stop
+# Stop MySQL
 docker compose down
 
 # View logs
@@ -163,224 +261,215 @@ mvn clean install
 # Run tests
 mvn test
 
-# Run the application
+# Start application
 mvn spring-boot:run
+
+# View coverage
+mvn test && open target/site/jacoco/index.html
 ```
 
 ### Frontend
 
-**⚠️ IMPORTANT: Use Node 16 for frontend commands**
-
 ```bash
 cd front
 
-# Ensure Node 16 is being used
+# Ensure using Node 16
 nvm use 16
 
-# Install dependencies (already done)
+# Install dependencies
 npm install
 
-# Run in dev mode with proxy
+# Start in development mode
 npm run start -- --proxy-config src/proxy.config.json
 
-# Run Jest unit tests
-npm run test                    # Without coverage
-npm test -- --coverage          # With coverage
+# Jest tests
+npm test                    # Without coverage
+npm test -- --coverage      # With coverage
 
-# Run e2e tests with Cypress (requires backend + frontend running)
-npm run cypress:run             # Headless mode
-npm run cypress:open            # Interactive mode
-npm run e2e:coverage            # Generate coverage report after tests
+# Cypress tests
+npm run cypress:run         # Headless mode
+npm run cypress:open        # Interactive mode
 ```
 
-**💡 Tip**: Use the scripts at the project root (./start-back.sh, ./run-jest.sh, etc.) which automatically manage Java/Node versions!
+## Troubleshooting
 
-## 🔧 Configuration
+### Ports Already in Use
 
-### Database
-
-- **Host**: localhost
-- **Port**: 3306
-- **Database**: yoga
-- **User**: root
-- **Password**: root
-
-Configuration in: `back/src/main/resources/application.properties`
-
-### Default User
-
-- **Email**: yoga@studio.com
-- **Password**: test!1234
-
-## 🧪 Tests
-
-### Unit Tests (Jest)
-
-Jest tests work with **Node 16** and automatically generate a **coverage** report.
-
-**Option 1: Using the script (recommended - generates coverage)**
-```bash
-./run-jest.sh
-```
-✅ Generates coverage report in `front/coverage/jest/lcov-report/index.html`
-
-**Option 2: Manually**
-```bash
-cd front
-nvm use 16
-npm run test              # Without coverage
-npm test -- --coverage    # With coverage
-```
-
-### E2E Tests (Cypress)
-
-Cypress tests require that **both backend AND frontend** are running.
-
-**Step 1: Start services**
-```bash
-# Terminal 1: Backend
-./start-back.sh
-
-# Terminal 2: Frontend  
-./start-front.sh
-```
-
-**Step 2: Run tests**
-
-**Option 1: Using the script (recommended - generates coverage)**
-```bash
-./run-cypress.sh
-```
-
-The script:
-- ✅ Verifies services are running (ports 8080 and 4200)
-- ✅ Launches Cypress tests in headless mode
-- ✅ Automatically generates coverage report
-- ✅ Exits cleanly at the end
-
-**Option 2: Manually**
-```bash
-cd front
-nvm use 16
-npm run cypress:run       # Headless mode
-# or
-npm run cypress:open      # Interactive mode (no auto coverage)
-npm run e2e:coverage      # Generate coverage after tests
-```
-
-### 📊 View Coverage Reports
+If you get an "Address already in use" error:
 
 ```bash
-./view-coverage.sh
+# Identify process using a port
+lsof -i :8080    # Backend
+lsof -i :4200    # Frontend
+lsof -i :3306    # MySQL
+
+# Stop services
+pkill -f "spring-boot:run"  # Backend
+pkill -f "ng serve"         # Frontend
+docker compose down         # MySQL
+
+# Or kill a specific process
+kill $(lsof -t -i :8080)
 ```
 
-This will display paths to:
-- **Jest**: `front/coverage/jest/lcov-report/index.html`
-- **Cypress**: `front/coverage/lcov-report/index.html`
-
-Open these files in your browser to see detailed code coverage reports.
-
-## 📁 Project Structure
-
-```
-savasana/
-├── back/          # Spring Boot Backend
-├── front/         # Angular Frontend
-├── ressources/    # SQL Scripts and Postman
-└── docker-compose.yml  # MySQL Configuration
-```
-
-## 🐛 Troubleshooting
-
-### Docker Doesn't Work
-
-1. Verify you have logged out and back in
-2. Check: `groups` (must contain "docker")
-3. If needed, restart the service: `sudo systemctl restart docker`
-
-### MySQL Won't Start
+### Docker Not Working
 
 ```bash
-# View logs
+# Check you are in the docker group
+groups
+
+# If docker doesn't appear, log out and log back in
+
+# Restart Docker service
+sudo systemctl restart docker
+
+# Test
+docker ps
+```
+
+### MySQL Connection Issues
+
+```bash
+# Check MySQL logs
 docker compose logs mysql
 
-# Reset
+# Complete database reset
 docker compose down -v
 docker compose up -d
 ```
 
-### Port Already in Use
+### Backend Compilation Errors
+
+If you have compilation errors:
 
 ```bash
-# Check used ports
-sudo ss -tulpn | grep -E ':(3306|8080|4200)'
+# Check Java version
+java -version  # Must be Java 17
 
-# Stop the service
-pkill -f "spring-boot:run"    # Backend
-pkill -f "ng serve"           # Frontend
-docker compose down           # MySQL
+# Compile with correct version
+cd back
+JAVA_HOME=/usr/lib/jvm/java-17-openjdk mvn clean install
 ```
 
-## 🔑 Environment Variables
-
-### Backend (Java 17)
-
-Automatically configured by `start-back.sh`:
+### Frontend NPM Errors
 
 ```bash
-JAVA_HOME=/usr/lib/jvm/java-17-openjdk
+# Check Node version
+node -v  # Must be v16.x
+
+# Reinstall dependencies
+cd front
+rm -rf node_modules package-lock.json
+npm install
 ```
 
-### Frontend (Node 16)
+## Project Structure
 
-Automatically configured by scripts using:
-
-```bash
-export PATH="$HOME/.config/nvm/versions/node/v16.20.2/bin:$PATH"
+```
+savasana/
+├── back/                   # Spring Boot Backend
+│   ├── src/
+│   │   ├── main/java/     # Source code
+│   │   └── test/java/     # Tests (77 tests)
+│   ├── pom.xml            # Maven configuration
+│   └── target/            # Build artifacts
+│       └── site/jacoco/   # Coverage report
+│
+├── front/                  # Angular Frontend
+│   ├── src/
+│   │   ├── app/           # Angular components
+│   │   └── assets/        # Static resources
+│   ├── cypress/           # E2E tests
+│   ├── coverage/          # Coverage reports
+│   ├── package.json       # npm dependencies
+│   └── angular.json       # Angular configuration
+│
+├── ressources/
+│   ├── sql/
+│   │   └── script.sql     # Database initialization script
+│   └── postman/
+│       └── yoga.postman_collection.json
+│
+├── docker-compose.yml     # MySQL configuration
+├── start-back.sh          # Backend start script
+├── start-front.sh         # Frontend start script
+├── run-jest.sh            # Jest tests script
+├── run-cypress.sh         # Cypress tests script
+└── view-coverage.sh       # Coverage visualization script
 ```
 
-## 📦 Dependencies
+## Technologies Used
 
 ### Backend
-
-- **Spring Boot**: 2.6.1
-- **Java**: 17
-- **Lombok**: 1.18.30
-- **MapStruct**: 1.5.5.Final
-- **MySQL Connector**: 8.0.27
-- **JWT**: 0.9.1
+- **Spring Boot** 2.6.1
+- **Java** 17
+- **Spring Security** + JWT
+- **Spring Data JPA**
+- **MySQL** 8.0
+- **Lombok** 1.18.22
+- **MapStruct** 1.5.1
+- **Maven** 3.9+
 
 ### Frontend
+- **Angular** 14.2.0
+- **Node.js** 16.x
+- **TypeScript** 4.7.4
+- **Angular Material** 14.2.0
+- **RxJS** 7.5.6
 
-- **Angular**: 14.2.0
-- **Node**: 16.20.2
-- **RxJS**: 7.5.6
-- **Angular Material**: 14.2.0
-- **Cypress**: 10.4.0
-- **Jest**: 28.1.3
+### Testing
+- **JUnit** 5.8.1
+- **Mockito** 4.0.0
+- **Jest** 28.1.3
+- **Cypress** 10.4.0
+- **Jacoco** 0.8.11
 
-## 🚀 Quick Start Summary
+## Test Metrics
+
+### Backend (JUnit + Jacoco)
+- **77 tests** in total
+  - 52 integration tests (67.5%)
+  - 25 unit tests (32.5%)
+- **Coverage**
+  - Instructions: 87%
+  - Branches: 66%
+  - 100% on non-generated code
+
+### Frontend
+- **Jest tests**: Component unit tests
+- **Cypress tests**: Complete E2E tests
+- Coverage reports available in `front/coverage/`
+
+## Quick Start
 
 ```bash
-# 1. Start MySQL
+# 1. Database
 docker compose up -d
 
-# 2. Start Backend (Terminal 1)
+# 2. Backend (Terminal 1)
 ./start-back.sh
 
-# 3. Start Frontend (Terminal 2)
+# 3. Frontend (Terminal 2)
 ./start-front.sh
 
-# 4. Run Tests
-./run-jest.sh       # Unit tests with coverage
-./run-cypress.sh    # E2E tests with coverage (requires services running)
+# 4. Tests
+./run-jest.sh       # Frontend unit tests
+./run-cypress.sh    # E2E tests (requires backend + frontend)
 
-# 5. View Coverage
+# 5. Coverage
 ./view-coverage.sh
 ```
 
-## 📖 Additional Resources
+## Additional Resources
 
 - **Postman Collection**: `ressources/postman/yoga.postman_collection.json`
 - **SQL Script**: `ressources/sql/script.sql`
-- **French Documentation**: `SETUP.md`
+- **Detailed Setup Guide**: [SETUP.md](SETUP.md)
+
+## License
+
+This project is developed as part of an OpenClassrooms training program.
+
+---
+
+**Test account**: yoga@studio.com / test!1234

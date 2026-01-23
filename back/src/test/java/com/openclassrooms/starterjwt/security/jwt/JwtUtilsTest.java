@@ -97,4 +97,48 @@ class JwtUtilsTest {
 
         assertFalse(isValid);
     }
+
+    @Test
+    void validateJwtToken_shouldReturnFalse_whenTokenHasInvalidSignature() {
+        String tokenWithWrongSignature = Jwts.builder()
+                .setSubject("test@test.com")
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .signWith(SignatureAlgorithm.HS512, "wrongSecret")
+                .compact();
+
+        boolean isValid = jwtUtils.validateJwtToken(tokenWithWrongSignature);
+
+        assertFalse(isValid);
+    }
+
+    @Test
+    void validateJwtToken_shouldReturnFalse_whenTokenMalformed() {
+        String malformedToken = "this.is.not.a.valid.jwt";
+
+        boolean isValid = jwtUtils.validateJwtToken(malformedToken);
+
+        assertFalse(isValid);
+    }
+
+    @Test
+    void validateJwtToken_shouldReturnFalse_whenTokenEmpty() {
+        String emptyToken = "";
+
+        boolean isValid = jwtUtils.validateJwtToken(emptyToken);
+
+        assertFalse(isValid);
+    }
+
+    @Test
+    void validateJwtToken_shouldReturnFalse_whenTokenUnsupported() {
+        // Create a token without signature (unsupported)
+        String unsupportedToken = Jwts.builder()
+                .setSubject("test@test.com")
+                .compact();
+
+        boolean isValid = jwtUtils.validateJwtToken(unsupportedToken);
+
+        assertFalse(isValid);
+    }
 }

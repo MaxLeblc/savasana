@@ -1,98 +1,77 @@
 package com.openclassrooms.starterjwt.controllers;
 
-import com.openclassrooms.starterjwt.dto.TeacherDto;
-import com.openclassrooms.starterjwt.mapper.TeacherMapper;
-import com.openclassrooms.starterjwt.models.Teacher;
-import com.openclassrooms.starterjwt.services.TeacherService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.hamcrest.Matchers.*;
 
 /**
- * Integration tests for TeacherController
+ * Integration tests for TeacherController with H2 database
  *
- * Uses MockMvc to simulate HTTP requests without starting a full server.
- * @SpringBootTest loads the complete application context.
- * @AutoConfigureMockMvc configures MockMvc for testing REST controllers.
- * @MockBean replaces real beans with mocks in the Spring context.
+ * Tests use real database with data from data.sql:
+ * - Teacher ID=1: Margot DELAHAYE
+ * - Teacher ID=2: Hélène THIERCELIN
  */
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 public class TeacherControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
-    private TeacherService teacherService;
-
-    @MockBean
-    private TeacherMapper teacherMapper;
-
     /**
-     * Test GET /api/teacher/{id} with valid existing teacher
-     * Expected: 200 OK with teacher data
+     * Test GET /api/teacher/{id} with existing teacher from H2
+     * Teacher ID=1 is Margot DELAHAYE (from data.sql)
      */
     @Test
-    @WithMockUser  // Simulates an authenticated user
+    @WithMockUser
     public void testFindById_ExistingTeacher_ReturnsTeacher() throws Exception {
-        // ARRANGE
-        Long teacherId = 1L;
-        Teacher teacher = new Teacher();
-        teacher.setId(teacherId);
-        teacher.setFirstName("John");
-        teacher.setLastName("Doe");
-
-        TeacherDto teacherDto = new TeacherDto();
-        teacherDto.setId(teacherId);
-        teacherDto.setFirstName("John");
-        teacherDto.setLastName("Doe");
-
-        when(teacherService.findById(teacherId)).thenReturn(teacher);
-        when(teacherMapper.toDto(teacher)).thenReturn(teacherDto);
-
-        // ACT & ASSERT
-        mockMvc.perform(get("/api/teacher/{id}", teacherId))
+        // ACT & ASSERT - Using real data from H2
+        mockMvc.perform(get("/api/teacher/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(teacherId))
-                .andExpect(jsonPath("$.firstName").value("John"))
-                .andExpect(jsonPath("$.lastName").value("Doe"));
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.firstName").value("Margot"))
+                .andExpect(jsonPath("$.lastName").value("DELAHAYE"));
     }
 
     /**
      * Test GET /api/teacher/{id} with non-existing teacher
-     * Expected: 404 NOT FOUND
      */
     @Test
     @WithMockUser
     public void testFindById_NonExistingTeacher_ReturnsNotFound() throws Exception {
-        // ARRANGE
-        Long teacherId = 999L;
-        when(teacherService.findById(teacherId)).thenReturn(null);
-
-        // ACT & ASSERT
-        mockMvc.perform(get("/api/teacher/{id}", teacherId))
+        // ACT & ASSERT - ID 999 doesn't exist in H2
+        mockMvc.perform(get("/api/teacher/{id}", 999L))
                 .andExpect(status().isNotFound());
     }
 
     /**
+     * Test GET /api/teacher/{id} with Teacher ID=2 (Hélène THIERCELIN)
+     */
+    @Test
+    @WithMockUser
+    public void testFindById_SecondTeacher_ReturnsTeacher() throws Exception {
+        // ACT & ASSERT - Using real data from H2
+        mockMvc.perform(get("/api/teacher/{id}", 2L))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(2))
+                .andExpect(jsonPath("$.firstName").value("Hélène"))
+                .andExpect(jsonPath("$.lastName").value("THIERCELIN"));
+    }
+
+    /**
      * Test GET /api/teacher/{id} with invalid ID format
-     * Expected: 400 BAD REQUEST
      */
     @Test
     @WithMockUser
@@ -103,72 +82,27 @@ public class TeacherControllerTest {
     }
 
     /**
-     * Test GET /api/teacher to retrieve all teachers
-     * Expected: 200 OK with list of teachers
+     * Test GET /api/teacher to retrieve all teachers from H2
+     * Expected: 2 teachers (Margot DELAHAYE, Hélène THIERCELIN)
      */
     @Test
     @WithMockUser
     public void testFindAll_ReturnsAllTeachers() throws Exception {
-        // ARRANGE
-        Teacher teacher1 = new Teacher();
-        teacher1.setId(1L);
-        teacher1.setFirstName("John");
-        teacher1.setLastName("Doe");
-
-        Teacher teacher2 = new Teacher();
-        teacher2.setId(2L);
-        teacher2.setFirstName("Jane");
-        teacher2.setLastName("Smith");
-
-        List<Teacher> teachers = Arrays.asList(teacher1, teacher2);
-
-        TeacherDto teacherDto1 = new TeacherDto();
-        teacherDto1.setId(1L);
-        teacherDto1.setFirstName("John");
-        teacherDto1.setLastName("Doe");
-
-        TeacherDto teacherDto2 = new TeacherDto();
-        teacherDto2.setId(2L);
-        teacherDto2.setFirstName("Jane");
-        teacherDto2.setLastName("Smith");
-
-        List<TeacherDto> teacherDtos = Arrays.asList(teacherDto1, teacherDto2);
-
-        when(teacherService.findAll()).thenReturn(teachers);
-        when(teacherMapper.toDto(teachers)).thenReturn(teacherDtos);
-
-        // ACT & ASSERT
+        // ACT & ASSERT - Using real data from H2
         mockMvc.perform(get("/api/teacher"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id").value(1))
-                .andExpect(jsonPath("$[0].firstName").value("John"))
+                .andExpect(jsonPath("$[0].firstName").value("Margot"))
+                .andExpect(jsonPath("$[0].lastName").value("DELAHAYE"))
                 .andExpect(jsonPath("$[1].id").value(2))
-                .andExpect(jsonPath("$[1].firstName").value("Jane"));
-    }
-
-    /**
-     * Test GET /api/teacher when no teachers exist
-     * Expected: 200 OK with empty list
-     */
-    @Test
-    @WithMockUser
-    public void testFindAll_NoTeachers_ReturnsEmptyList() throws Exception {
-        // ARRANGE
-        when(teacherService.findAll()).thenReturn(Collections.emptyList());
-        when(teacherMapper.toDto(Collections.emptyList())).thenReturn(Collections.emptyList());
-
-        // ACT & ASSERT
-        mockMvc.perform(get("/api/teacher"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(0)));
+                .andExpect(jsonPath("$[1].firstName").value("Hélène"))
+                .andExpect(jsonPath("$[1].lastName").value("THIERCELIN"));
     }
 
     /**
      * Test accessing teacher endpoints without authentication
-     * Expected: 401 UNAUTHORIZED (depends on security configuration)
      */
     @Test
     public void testFindById_WithoutAuthentication_ReturnsUnauthorized() throws Exception {

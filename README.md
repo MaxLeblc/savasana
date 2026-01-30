@@ -119,8 +119,11 @@ JAVA_HOME=/usr/lib/jvm/java-17-openjdk mvn clean test
 ```
 
 - **Report**: `./back/target/site/jacoco/index.html`
+- **Database**: H2 in-memory (tests only) - No Docker required
 
-> **Note**: Coverage excludes generated code (DTOs, Models, Payloads, MapStruct implementations) following industry best practices.
+> **Notes**: 
+> - Integration tests use H2 instead of MySQL for speed and isolation
+> - Coverage excludes generated code (DTOs, Models, Payloads, MapStruct implementations) following industry best practices
 
 ### Frontend Unit Tests (Jest)
 
